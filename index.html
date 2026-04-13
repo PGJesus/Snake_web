@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kígyó – A Klasszikus Kaland</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- Fejléc -->
+    <header>
+      <h1>🐍 Kígyó</h1>
+      <p class="subtitle">Edd meg az almákat, kerüld a falakat!</p>
+    </header>
+
+    <!-- Pontok és szint sáv -->
+    <div id="stats">
+      <div class="stat-box">
+        <span class="stat-label">Pontszám</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Legjobb</span>
+        <span class="stat-value" id="highscore">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Szint</span>
+        <span class="stat-value" id="level">1</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Cél</span>
+        <span class="stat-value" id="goal-display">10</span>
+      </div>
+    </div>
+
+    <!-- Haladásjelző -->
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+      <span id="progress-label">0 / 10</span>
+    </div>
+
+    <!-- Canvas -->
+    <div id="canvas-wrapper">
+      <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+      <!-- Overlay képernyők -->
+      <div id="overlay" class="overlay active">
+        <div class="overlay-box">
+          <div class="overlay-icon">🐍</div>
+          <h2>Kígyó</h2>
+          <p>Gyűjts <strong>10 almát</strong> szintenként!<br>
+             Minden alma <strong>+10 pontot</strong> ér.<br>
+             A sebesség szintenként nő.</p>
+          <p class="hint">Irányítás: <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> vagy <kbd>WASD</kbd></p>
+          <button id="startBtn" class="btn btn-primary">Játék Indítása</button>
+        </div>
+      </div>
+
+      <div id="win-overlay" class="overlay">
+        <div class="overlay-box win">
+          <div class="overlay-icon">🏆</div>
+          <h2>Győzelem!</h2>
+          <p id="win-message">Teljesítetted mind a 5 szintet!</p>
+          <p>Végső pontszámod: <strong id="final-score-win">0</strong></p>
+          <button id="winRestartBtn" class="btn btn-primary">Újra Játszom</button>
+        </div>
+      </div>
+
+      <div id="lose-overlay" class="overlay">
+        <div class="overlay-box lose">
+          <div class="overlay-icon">💀</div>
+          <h2>Játék Vége</h2>
+          <p id="lose-message">Nekimentél a falnak vagy önmagadnak!</p>
+          <p>Pontszámod: <strong id="final-score-lose">0</strong></p>
+          <button id="loseRestartBtn" class="btn btn-danger">Próbáld Újra</button>
+        </div>
+      </div>
+
+      <div id="levelup-overlay" class="overlay">
+        <div class="overlay-box levelup">
+          <div class="overlay-icon">⬆️</div>
+          <h2 id="levelup-title">Szint Teljesítve!</h2>
+          <p id="levelup-msg">Továbblépés a következő szintre...</p>
+          <p class="hint">A kígyó gyorsabb lesz!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobil irányítók -->
+    <div id="mobile-controls">
+      <div class="dpad-row">
+        <button class="dpad-btn" data-dir="UP">▲</button>
+      </div>
+      <div class="dpad-row">
+        <button class="dpad-btn" data-dir="LEFT">◄</button>
+        <button class="dpad-btn" data-dir="DOWN">▼</button>
+        <button class="dpad-btn" data-dir="RIGHT">►</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>Készítette: Snake Web &mdash; 2025</p>
+    </footer>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
