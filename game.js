@@ -1,42 +1,46 @@
-const WIN_SCORE = 5;
-const SPEED_START = 130;
-const SPEED_MIN   = 55;
+const SPEED_NORMAL_START = 130;
+const SPEED_NORMAL_MIN   = 60;
+const SPEED_HARD_START   = 75;
+const SPEED_HARD_MIN     = 35;
+const SPEED_SCORE_MAX    = 20;
 
 const COLS = 20, ROWS = 20, CELL = 20;
-const canvas  = document.getElementById('c');
-const ctx     = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-const bestEl  = document.getElementById('best');
-const msgEl   = document.getElementById('msg');
-const modal   = document.getElementById('modal');
+const canvas     = document.getElementById('c');
+const ctx        = canvas.getContext('2d');
+const scoreEl    = document.getElementById('score');
+const bestEl     = document.getElementById('best');
+const msgEl      = document.getElementById('msg');
+const modal      = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
 const modalSub   = document.getElementById('modal-sub');
-const btnReplay  = document.getElementById('btn-replay');
-const btnEndless = document.getElementById('btn-endless');
+const btnNormal  = document.getElementById('btn-normal');
+const btnHard    = document.getElementById('btn-hard');
 
-let snake, dir, next, food, score, running, loop, endless;
+let snake, dir, next, food, score, running, loop, difficulty;
 let highScore = parseInt(localStorage.getItem('snake_hs') || '0');
 
 bestEl.textContent = 'BEST: ' + highScore;
 
 function speed() {
-  const t = Math.min(score / WIN_SCORE, 1);
-  return Math.round(SPEED_START - t * (SPEED_START - SPEED_MIN));
+  const t = Math.min(score / SPEED_SCORE_MAX, 1);
+  if (difficulty === 'hard') {
+    return Math.round(SPEED_HARD_START - t * (SPEED_HARD_START - SPEED_HARD_MIN));
+  }
+  return Math.round(SPEED_NORMAL_START - t * (SPEED_NORMAL_START - SPEED_NORMAL_MIN));
 }
 
-function init(endlessMode) {
-  endless = !!endlessMode;
+function init(diff) {
+  difficulty = diff;
   snake = [
     {x:10, y:10},
-    {x:9, y:10},
-    {x:8, y:10}];
+    {x:9,  y:10},
+    {x:8,  y:10}];
   dir  = {x:0, y:0};
   next = {x:0, y:0};
   score = 0;
   running = false;
   scoreEl.textContent = 'SCORE: 0';
-  msgEl.textContent = endless
-    ? 'endless — press any arrow key to start'
-    : 'normal — press any arrow key to start';
+  msgEl.textContent = difficulty + ' — press any arrow key to start';
   modal.classList.add('hidden');
   placeFood();
   draw();
@@ -84,7 +88,6 @@ function tick() {
     scoreEl.textContent = 'SCORE: ' + score;
     checkHighScore();
     setSpeed();
-    if (!endless && score >= WIN_SCORE) return win();
     placeFood();
   } else {
     snake.pop();
@@ -104,14 +107,6 @@ function checkHighScore() {
   bestEl.addEventListener('animationend', () => bestEl.classList.remove('new-record'), { once: true });
 }
 
-function win() {
-  clearInterval(loop);
-  running = false;
-  draw();
-  modalSub.textContent = 'you reached ' + score + ' points';
-  modal.classList.remove('hidden');
-}
-
 function end() {
   clearInterval(loop);
   running = false;
@@ -119,9 +114,15 @@ function end() {
   const flash = setInterval(() => {
     ctx.fillStyle = flashes % 2 === 0 ? '#300' : '#111';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    if (++flashes >= 6) { clearInterval(flash); draw(); }
+    if (++flashes >= 6) {
+      clearInterval(flash);
+      draw();
+      modalTitle.textContent = 'GAME OVER';
+      modalSub.textContent = 'score: ' + score;
+      modal.classList.remove('hidden');
+    }
   }, 80);
-  msgEl.textContent = 'game over — press any arrow key to restart';
+  msgEl.textContent = '';
 }
 
 function draw() {
@@ -151,13 +152,8 @@ document.addEventListener('keydown', e => {
   if (d.x === -dir.x && d.y === -dir.y) return;
 
   next = d;
-  if (!running) {
-    if (score > 0 || snake.length !== 3 || dir.x !== 0 || dir.y !== 0) init(endless);
-    start();
-  }
+  if (!running && difficulty && modal.classList.contains('hidden')) start();
 });
 
-btnReplay.addEventListener('click', () => { init(false); });
-btnEndless.addEventListener('click', () => { init(true); });
-
-init(false);
+btnNormal.addEventListener('click', () => { init('normal'); });
+btnHard.addEventListener('click', () => { init('hard'); });
