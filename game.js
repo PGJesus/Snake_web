@@ -25,7 +25,10 @@ function speed() {
 
 function init(endlessMode) {
   endless = !!endlessMode;
-  snake = [{x:10, y:10}, {x:9, y:10}, {x:8, y:10}];
+  snake = [
+    {x:10, y:10},
+    {x:9, y:10},
+    {x:8, y:10}];
   dir  = {x:0, y:0};
   next = {x:0, y:0};
   score = 0;
@@ -33,7 +36,7 @@ function init(endlessMode) {
   scoreEl.textContent = 'SCORE: 0';
   msgEl.textContent = endless
     ? 'endless — press any arrow key to start'
-    : 'press any arrow key to start';
+    : 'normal — press any arrow key to start';
   modal.classList.add('hidden');
   placeFood();
   draw();
@@ -43,7 +46,9 @@ function init(endlessMode) {
 function placeFood() {
   let pos;
   do {
-    pos = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+    pos = {
+      x: Math.floor(Math.random() * COLS),
+      y: Math.floor(Math.random() * ROWS) };
   } while (snake.some(s => s.x === pos.x && s.y === pos.y));
   food = pos;
 }
@@ -64,7 +69,10 @@ function tick() {
   dir = next;
   if (dir.x === 0 && dir.y === 0) return;
 
-  const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+  const head = {
+    x: snake[0].x + dir.x,
+    y: snake[0].y + dir.y
+  };
 
   if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) return end();
   if (snake.some(s => s.x === head.x && s.y === head.y)) return end();
